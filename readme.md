@@ -1,5 +1,8 @@
 # Rowza
 
+[![npm version](https://img.shields.io/npm/v/rowza.svg)](https://www.npmjs.com/package/rowza)
+[![license](https://img.shields.io/npm/l/rowza.svg)](LICENSE)
+
 > Flexible, developer-first dynamic data table engine for modern React applications.
 
 ---
