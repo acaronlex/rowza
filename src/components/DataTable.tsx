@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { ColumnFiltersState } from "@tanstack/react-table";
 
 interface FilterOption {
   label: string;
@@ -65,36 +66,42 @@ export function DataTable<TData, TValue>({
   filters = [],
   labels = {},
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [globalFilter, setGlobalFilter] = React.useState<string | undefined>("");
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 25,
   });
-  const [columnFilters, setColumnFilters] = React.useState<Record<string, string>>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  
 
   const mergedLabels = { ...defaultLabels, ...labels };
 
   const table = useReactTable({
     data,
     columns,
-    state: { globalFilter, pagination },
+    state: {
+      globalFilter,
+      pagination,
+      columnFilters,
+    },
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+  
 
   const hasActiveFilters =
-    (globalFilter.trim() !== "") ||
-    Object.values(columnFilters).some((value) => (value ?? "").trim() !== "");
+    (globalFilter?.trim() ?? "").trim() !== "" ||
+    columnFilters.some((f) => (f.value ?? "").trim() !== "");
 
-  const handleResetFilters = () => {
-    setGlobalFilter("");
-    setColumnFilters({});
-    table.resetColumnFilters();
-    table.resetGlobalFilter();
-  };
+    const handleResetFilters = () => {
+      setGlobalFilter("");
+      setColumnFilters([]);
+      table.setColumnFilters([]);
+    };
 
   return (
     <div className="space-y-4">
@@ -102,21 +109,18 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-wrap items-center gap-4">
         <Input
           placeholder={mergedLabels.searchPlaceholder}
-          value={globalFilter}
+          value={globalFilter ?? ""}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-full md:max-w-sm"
+          className="w-[250px]"
         />
 
         {filters.map(({ columnId, placeholder, options }) => (
           <Select
             key={columnId}
-            value={columnFilters[columnId] ?? ""}
+            value={String(columnFilters.find((f) => f.id === columnId)?.value ?? "")}
             onValueChange={(value) => {
-              table.getColumn(columnId)?.setFilterValue(value || undefined);
-              setColumnFilters((prev) => ({
-                ...prev,
-                [columnId]: value,
-              }));
+              const v = value === "" ? undefined : value;
+              table.getColumn(columnId)?.setFilterValue(v);
             }}
           >
             <SelectTrigger className="w-[150px]">
