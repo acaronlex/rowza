@@ -6,16 +6,33 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'index.ts'),
+      entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'Rowza',
       fileName: (format) => `rowza.${format}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: [
+        'react',
+        'react-dom',
+        '@tanstack/react-table',
+        'lucide-react',
+        '@radix-ui/react-slot',
+        '@radix-ui/react-select',
+        'class-variance-authority',
+        'clsx',
+        'tailwind-merge'
+      ],
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
+          '@tanstack/react-table': 'ReactTable',
+          'lucide-react': 'LucideReact',
+          '@radix-ui/react-slot': 'RadixSlot',
+          '@radix-ui/react-select': 'RadixSelect',
+          'class-variance-authority': 'ClassVarianceAuthority',
+          'clsx': 'clsx',
+          'tailwind-merge': 'TailwindMerge'
         },
       },
     },
