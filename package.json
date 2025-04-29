@@ -26,6 +26,10 @@
     "tailwindcss",
     "i18n"
   ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
   "main": "./dist/rowza.umd.js",
   "module": "./dist/rowza.es.js",
   "types": "./dist/types/index.d.ts",
