@@ -1,6 +1,6 @@
 {
   "name": "rowza",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/rowza.umd.js",
   "module": "./dist/rowza.es.js",
@@ -9,7 +9,13 @@
     "dev": "vite",
     "build": "vite build"
   },
-  "keywords": ["datatable", "react", "rowza", "admin-table", "pagination"],
+  "keywords": [
+    "datatable",
+    "react",
+    "rowza",
+    "admin-table",
+    "pagination"
+  ],
   "author": "Alex Caron <alex@alexcaron.ca>",
   "license": "MIT",
   "description": "Flexible, developer-first dynamic data table engine for modern React applications.",
