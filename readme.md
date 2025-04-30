@@ -119,6 +119,27 @@ export function UsersPage() {
 }
 ```
 
+
+---
+
+
+## 📁 Example
+
+A full working example with filtering by **Statut** and **Rôle** is available in:
+
+/examples/users-table/
+
+This includes:
+
+- A user table with filters for `archived` (Actif / Archivé) and `roles`
+- Action buttons to Edit / Archive / Unarchive
+- Sample mock data and minimal setup
+
+### 📸 Preview
+
+![Rowza Users Table Example](https://raw.githubusercontent.com/alcaron7/rowza/main/example/users-table/preview.png)
+
+
 ---
 
 ## 🔥 Key Concepts
