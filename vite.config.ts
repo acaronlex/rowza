@@ -1,14 +1,21 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true, // ajoute `"types"` dans "exports"
+    }),
+  ],
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'Rowza',
       fileName: (format) => `rowza.${format}.js`,
+      formats: ['es', 'umd'],
     },
     rollupOptions: {
       external: [
@@ -20,7 +27,7 @@ export default defineConfig({
         '@radix-ui/react-select',
         'class-variance-authority',
         'clsx',
-        'tailwind-merge'
+        'tailwind-merge',
       ],
       output: {
         globals: {
@@ -32,9 +39,9 @@ export default defineConfig({
           '@radix-ui/react-select': 'RadixSelect',
           'class-variance-authority': 'ClassVarianceAuthority',
           'clsx': 'clsx',
-          'tailwind-merge': 'TailwindMerge'
+          'tailwind-merge': 'TailwindMerge',
         },
       },
     },
   },
-})
+});

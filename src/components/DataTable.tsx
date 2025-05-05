@@ -95,7 +95,7 @@ export function DataTable<TData, TValue>({
 
   const hasActiveFilters =
     (globalFilter?.trim() ?? "").trim() !== "" ||
-    columnFilters.some((f) => (f.value ?? "").trim() !== "");
+    columnFilters.some((f) => String(f.value ?? "").trim() !== "")
 
     const handleResetFilters = () => {
       setGlobalFilter("");
