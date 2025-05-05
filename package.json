@@ -1,6 +1,6 @@
 {
   "name": "rowza",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/rowza.umd.js",
   "module": "./dist/rowza.es.js",
