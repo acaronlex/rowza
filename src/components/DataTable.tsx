@@ -37,6 +37,7 @@ interface FilterConfig {
   columnId: string;
   placeholder: string;
   options: FilterOption[];
+  defaultValue?: string;
 }
 
 interface DataTableLabels {
@@ -67,12 +68,23 @@ export function DataTable<TData, TValue>({
   labels = {},
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = React.useState<string | undefined>("");
+
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 25,
   });
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  
+
+  // 👇 Initialize columnFilters from filters with defaultValue
+  const initialColumnFilters: ColumnFiltersState = filters
+    .filter((f) => f.defaultValue !== undefined)
+    .map((f) => ({
+      id: f.columnId,
+      value: f.defaultValue!,
+    }));
+
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    initialColumnFilters
+  );
 
   const mergedLabels = { ...defaultLabels, ...labels };
 
@@ -91,17 +103,22 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-  
 
   const hasActiveFilters =
     (globalFilter?.trim() ?? "").trim() !== "" ||
-    columnFilters.some((f) => String(f.value ?? "").trim() !== "")
+    columnFilters.some((f) => String(f.value ?? "").trim() !== "");
 
-    const handleResetFilters = () => {
-      setGlobalFilter("");
-      setColumnFilters([]);
-      table.setColumnFilters([]);
-    };
+  const handleResetFilters = () => {
+    setGlobalFilter("");
+    const resetToDefaults = filters
+      .filter((f) => f.defaultValue !== undefined)
+      .map((f) => ({
+        id: f.columnId,
+        value: f.defaultValue!,
+      }));
+    setColumnFilters(resetToDefaults);
+    table.setColumnFilters(resetToDefaults);
+  };
 
   return (
     <div className="space-y-4">
@@ -137,11 +154,7 @@ export function DataTable<TData, TValue>({
         ))}
 
         {hasActiveFilters && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetFilters}
-          >
+          <Button variant="outline" size="sm" onClick={handleResetFilters}>
             {mergedLabels.resetFilters}
           </Button>
         )}
@@ -176,10 +189,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   {mergedLabels.noResults}
                 </TableCell>
               </TableRow>
