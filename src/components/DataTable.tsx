@@ -52,6 +52,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   filters?: FilterConfig[];
   labels?: DataTableLabels;
+  cellClassName?: string; // let user apply tailwind class like 'uppercase'
 }
 
 const defaultLabels: Required<DataTableLabels> = {
@@ -76,6 +77,7 @@ export function DataTable<TData, TValue>({
                                            data,
                                            filters = [],
                                            labels = {},
+                                           cellClassName = "",
                                          }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = React.useState<string | undefined>("");
 
@@ -141,13 +143,15 @@ export function DataTable<TData, TValue>({
               placeholder={mergedLabels.searchPlaceholder}
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              className="w-[250px]"
+              className="w-[150px]"
           />
 
           {filters.map(({ columnId, placeholder, options }) => (
               <Select
                   key={columnId}
-                  value={String(columnFilters.find((f) => f.id === columnId)?.value ?? "")}
+                  value={String(
+                      columnFilters.find((f) => f.id === columnId)?.value ?? ""
+                  )}
                   onValueChange={(value) => {
                     const v = value === "" ? undefined : value;
                     table.getColumn(columnId)?.setFilterValue(v);
@@ -183,7 +187,10 @@ export function DataTable<TData, TValue>({
                         <TableHead key={header.id}>
                           {header.isPlaceholder
                               ? null
-                              : flexRender(header.column.columnDef.header, header.getContext())}
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                              )}
                         </TableHead>
                     ))}
                   </TableRow>
@@ -194,15 +201,21 @@ export function DataTable<TData, TValue>({
                   table.getRowModel().rows.map((row) => (
                       <TableRow key={row.id}>
                         {row.getVisibleCells().map((cell) => (
-                            <TableCell key={cell.id}>
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            <TableCell key={cell.id} className={cellClassName}>
+                              {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext()
+                              )}
                             </TableCell>
                         ))}
                       </TableRow>
                   ))
               ) : (
                   <TableRow>
-                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                    <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                    >
                       {mergedLabels.noResults}
                     </TableCell>
                   </TableRow>
